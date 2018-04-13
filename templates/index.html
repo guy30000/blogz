@@ -9,7 +9,7 @@
             {% for user in user %}
             <li>   
                 <h1>
-                    <a name='bloglink'  href="singleuser?id={{user.id}}">{{user.email}}</a>
+                    <a name='bloglink' value ='{{user.id}}' href="blog?user={{user.id}}">{{user.email}}</a>
 
                 </h1>
             </li>

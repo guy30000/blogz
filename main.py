@@ -32,7 +32,7 @@ class User(db.Model):
     def __init__(self, email, password):
         self.email = email
         self.password = password
-
+##############################################
 @app.before_request
 def require_login():
     allowed_routes = ['login', 'signup']
@@ -40,7 +40,7 @@ def require_login():
         print(session)
         return redirect('/login')
 
-
+##############################################
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
 
@@ -48,7 +48,7 @@ def index():
     id=request.args.get('id')
     if id:
         id=(int(id))
-
+        print ("FFFFFFFFFFFFFF", id, id, id, id, id, id, id, id, "FFFFFFFFFFFFF")
         sngl_post=Blog.query.filter(Blog.id==id).first()
         blg_title = sngl_post.blg_title
         blg_body = sngl_post.blg_body
@@ -56,7 +56,7 @@ def index():
         return render_template('blog.html', title=blg_title, blg_body=blg_body)
 
     return render_template('blog.html',title="Build a Blogz", blog=blog)
-
+##############################################
 @app.route('/singleuser', methods=['POST', 'GET'])
 def singleuser():
     
@@ -64,24 +64,19 @@ def singleuser():
     id=request.args.get('id')
     owner = User.query.filter_by(email=session['email']).first()
     blog = Blog.query.filter_by(owner=owner).all()
+
     if id:
         id=(int(id))
-
         sngl_post=Blog.query.filter(Blog.id==id).first()
         blg_title = sngl_post.blg_title
         blg_body = sngl_post.blg_body
         print(blg_title, blg_body)
         return render_template('singleuser.html', title=blg_title, blg_body=blg_body)
-
     return render_template('singleuser.html',title="My Blogz", blog=blog)
-
-
+##############################################
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
     owner = User.query.filter_by(email=session['email']).first()
-
-
-
     if request.method == 'POST':
         blg_title = request.form['blg_title']
         blg_body = request.form['blg_body']
@@ -96,33 +91,23 @@ def newpost():
         return render_template('blog_entry.html', blog=new_entry)
 
     return render_template('newpost.html')
-
-
-
 ##############################################
 @app.route('/', methods=['POST', 'GET'])
 def full_index():
+    print ("XXXXXXXGGGGGGGGGGGGGGGGGXX")
+    print ("XXXXXXXGGGGGGGGGGGGGGGGGXX")
+    print ("XXXXXXXGGGGGGGGGGGGGGGGGXX")
     user = User.query.all()
     blog = Blog.query.all()
-######
-    #id=request.args.get('id')
-    #owner = User.query.filter_by(email=session['email']).first()
-    #blog = Blog.query.filter_by(owner=owner).all()
-    #if id:
-    #    id=(int(id))
 
-     #   sngl_post=Blog.query.filter(Blog.id==id).first()
-     #   blg_title = sngl_post.blg_title
-     #   blg_body = sngl_post.blg_body
-     #   print(blg_title, blg_body)
-     #   return render_template('singleuser.html', title=blg_title, blg_body=blg_body)
+    id=request.args.get('user.id')
+    print ("XXXXXXXXXXXXXX", id, id, id, id, id, id, id, id, "XXXXXXXXXXXXXX")
+    if id:
+        id=(int(id))
+        print ("GGGGGGGGGGGG", id, id, id, id, id, id, id, id, "GGGGGGGGGGGG")
 
-    #return render_template('singleuser.html',title="My Blogz", blog=blog)
-
-
-
-#
     return render_template('index.html',title="User Index", user=user, blog=blog)
+
 
 ####################### For Blogz
 ###User stuff
@@ -149,7 +134,7 @@ def login():
     return render_template('login.html')
 
 ### End User stuff
-
+##############################################
 ##signup
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
@@ -200,7 +185,7 @@ def signup():
 
     return render_template('signup.html')
 ##end signup
-
+##############################################
 @app.route('/logout')
 def logout():
     del session['email']
