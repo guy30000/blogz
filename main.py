@@ -37,11 +37,13 @@ class User(db.Model):
 def require_login():
     allowed_routes = ['login', 'signup']
     if request.endpoint not in allowed_routes and 'email' not in session:
+        print(session)
         return redirect('/login')
+
 
 @app.route('/blog', methods=['POST', 'GET'])
 def index():
-    
+
     blog = Blog.query.all()
     id=request.args.get('id')
     if id:
@@ -53,7 +55,7 @@ def index():
         print(blg_title, blg_body)
         return render_template('blog.html', title=blg_title, blg_body=blg_body)
 
-    return render_template('blog.html',title="Build a Blog", blog=blog)
+    return render_template('blog.html',title="Build a Blogz", blog=blog)
 
 @app.route('/singleuser', methods=['POST', 'GET'])
 def singleuser():
@@ -62,7 +64,6 @@ def singleuser():
     id=request.args.get('id')
     owner = User.query.filter_by(email=session['email']).first()
     blog = Blog.query.filter_by(owner=owner).all()
-    print(owner, owner )
     if id:
         id=(int(id))
 
@@ -99,6 +100,30 @@ def newpost():
 
 
 ##############################################
+@app.route('/', methods=['POST', 'GET'])
+def full_index():
+    user = User.query.all()
+    blog = Blog.query.all()
+######
+    #id=request.args.get('id')
+    #owner = User.query.filter_by(email=session['email']).first()
+    #blog = Blog.query.filter_by(owner=owner).all()
+    #if id:
+    #    id=(int(id))
+
+     #   sngl_post=Blog.query.filter(Blog.id==id).first()
+     #   blg_title = sngl_post.blg_title
+     #   blg_body = sngl_post.blg_body
+     #   print(blg_title, blg_body)
+     #   return render_template('singleuser.html', title=blg_title, blg_body=blg_body)
+
+    #return render_template('singleuser.html',title="My Blogz", blog=blog)
+
+
+
+#
+    return render_template('index.html',title="User Index", user=user, blog=blog)
+
 ####################### For Blogz
 ###User stuff
 
@@ -109,17 +134,22 @@ def login():
         email = request.form['email']
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
+        if not user:
+            blg_fail = "User ID does not exist"
+            return render_template('login.html', blg_fail=blg_fail)
+
         if user and user.password == password:
             session['email'] = email
-            #flash("Logged in")
-            #return redirect('/blog')
-            return redirect("/blog")#this works
-        #else:
-            #flash('User password incorrect, or user does not exist', 'error')
 
+            return redirect("/newpost")#this works
+        else:
+            blg_fail = "Password is incorrect"
+            return render_template('login.html', blg_fail=blg_fail)
+    
     return render_template('login.html')
 
 ### End User stuff
+
 ##signup
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
@@ -127,8 +157,32 @@ def signup():
         email = request.form['email']
         password = request.form['password']
         verify = request.form['verify']
+        email_length = 0
+        password_length = 0
+        for char in email:
+           email_length = email_length + 1
+        for char in password:
+           password_length = password_length + 1
 
-        # TODO - validate user's data
+
+        blg_fail = ""
+        if email == "":
+            blg_fail = ("Please enter your email address")
+        if password != verify:
+            blg_fail = ("Passwords do not match")
+        if password == "":
+            blg_fail = ("Password cannot be blank")
+        if password_length < 3:       #tests pw length 
+            blg_fail = "Password must be at least 3 characters"
+        if email_length < 3:       #tests email length 
+            blg_fail = "Email must be at least 3 characters"
+
+
+
+        if blg_fail:
+            return render_template('signup.html', blg_fail=blg_fail)
+
+
 
         existing_user = User.query.filter_by(email=email).first()
         if not existing_user:
@@ -136,11 +190,12 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['email'] = email
-            return redirect('/blog')
+            return redirect('/newpost')
+
         else:
-            # TODO - user better response messaging
             blg_fail = ("Email has already been registered")
             return render_template('signup.html', blg_fail=blg_fail)
+
 
 
     return render_template('signup.html')

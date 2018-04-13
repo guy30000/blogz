@@ -6,17 +6,26 @@
     </head>
 <body>
 
-        <a href="/blog">All Blogz</a>
-        <a href="/newpost">Add a Blog Entry</a>
+        <a href="/">Home</a> |
+        <a href="/blog">All Blogz</a> |
+        <a href="/newpost">Add a Blogz Entry</a> |
         <a href="/singleuser">My Blogz</a>
 
+        <div style='float: right'>
+            {% if 'email' in session %}
+              {{ session['email'] }}
+              | <a href='/logout'>Log out</a>
+            {% else %}
+              <a href="login">Login</a> | <a href="/signup">Signup</a>
+            {% endif %}
+        </div>
 
-        <a style="float: right;"  href="/login"> Login </a>
-        <a style="float: right;" href="/signup"> Signup </a>
+ 
         
     {% block content %}
 
     {% endblock %}
     
 </body>
+
 </html>
