@@ -11,12 +11,20 @@
                 <h1>
 
                     <a name='bloglink' value ='{{blog.id}}' href="blog?id={{blog.id}}">{{blog.blg_title}}</a>
+                    
                 </h1>
             </li>
             
             {{blog.blg_body}}
+            <p>Written by <a href='/blog?user={{blog.owner.id}}'>{{blog.owner.email}}</a></p>
             {% endfor %}
             {{blg_body}}
+            <br>
+            {{written_by}}
+            <a href="/blog?user={{id}}">{{author_email}}</a></p>
+            
+
+
 
 
         </ul>

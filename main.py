@@ -45,17 +45,25 @@ def require_login():
 def index():
 
     blog = Blog.query.all()
+    user = User.query.all()
     id=request.args.get('id')
+    user=request.args.get('user')
+    
     if id:
-        id=(int(id))
-        print ("FFFFFFFFFFFFFF", id, id, id, id, id, id, id, id, "FFFFFFFFFFFFF")
         sngl_post=Blog.query.filter(Blog.id==id).first()
         blg_title = sngl_post.blg_title
         blg_body = sngl_post.blg_body
-        print(blg_title, blg_body)
-        return render_template('blog.html', title=blg_title, blg_body=blg_body)
+        written_by = "Written by:"
+        author_email = sngl_post.owner.email
+        id = sngl_post.owner_id
+        print("XXXXXXXXXXXXXXX", id , "XXXXXXXXXXXXXXXXXXXXX")
+        return render_template('blog.html', title=blg_title, blg_body=blg_body, written_by=written_by, author_email=author_email, id=id)
 
-    return render_template('blog.html',title="Build a Blogz", blog=blog)
+    if user:
+        author=User.query.filter(User.id==user).first()
+        blog=Blog.query.filter(Blog.owner_id==author.id).all()
+
+    return render_template('blog.html',title="Blogz", blog=blog, user=user)
 ##############################################
 @app.route('/singleuser', methods=['POST', 'GET'])
 def singleuser():
@@ -94,18 +102,10 @@ def newpost():
 ##############################################
 @app.route('/', methods=['POST', 'GET'])
 def full_index():
-    print ("XXXXXXXGGGGGGGGGGGGGGGGGXX")
-    print ("XXXXXXXGGGGGGGGGGGGGGGGGXX")
-    print ("XXXXXXXGGGGGGGGGGGGGGGGGXX")
+
     user = User.query.all()
     blog = Blog.query.all()
-
-    id=request.args.get('user.id')
-    print ("XXXXXXXXXXXXXX", id, id, id, id, id, id, id, id, "XXXXXXXXXXXXXX")
-    if id:
-        id=(int(id))
-        print ("GGGGGGGGGGGG", id, id, id, id, id, id, id, id, "GGGGGGGGGGGG")
-
+   
     return render_template('index.html',title="User Index", user=user, blog=blog)
 
 
