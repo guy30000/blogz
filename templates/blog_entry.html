@@ -10,6 +10,14 @@
         {{blog.blg_body}}
 
 
+        <p>Written by <a href='/blog?user={{blog.owner.id}}'>{{blog.owner.email}}</a></p>
+
+        {{blg_body}}
+        <br>
+        {{written_by}}
+        <a href="/blog?user={{id}}">{{author_email}}</a></p>
+
+
 
 {% endblock %}
 

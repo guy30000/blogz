@@ -37,7 +37,6 @@ class User(db.Model):
 def require_login():
     allowed_routes = ['login', 'signup', 'index']
     if request.endpoint not in allowed_routes and 'email' not in session:
-        print(session)
         return redirect('/login')
 
 ##############################################
@@ -50,6 +49,8 @@ def index():
     user=request.args.get('user')
     
     if id:
+        if 'email' not in session:
+            return redirect('/login')
         sngl_post=Blog.query.filter(Blog.id==id).first()
         blg_title = sngl_post.blg_title
         blg_body = sngl_post.blg_body
@@ -59,6 +60,8 @@ def index():
         return render_template('blog.html', title=blg_title, blg_body=blg_body, written_by=written_by, author_email=author_email, id=id)
 
     if user:
+        if 'email' not in session:
+            return redirect('/login')
         author=User.query.filter(User.id==user).first()
         blog=Blog.query.filter(Blog.owner_id==author.id).all()
 
@@ -96,6 +99,7 @@ def newpost():
         db.session.add(new_entry)
         db.session.commit()
         return render_template('blog_entry.html', blog=new_entry)
+
 
     return render_template('newpost.html')
 ##############################################
