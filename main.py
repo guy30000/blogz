@@ -35,7 +35,7 @@ class User(db.Model):
 ##############################################
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'signup']
+    allowed_routes = ['login', 'signup', 'index']
     if request.endpoint not in allowed_routes and 'email' not in session:
         print(session)
         return redirect('/login')
@@ -56,7 +56,6 @@ def index():
         written_by = "Written by:"
         author_email = sngl_post.owner.email
         id = sngl_post.owner_id
-        print("XXXXXXXXXXXXXXX", id , "XXXXXXXXXXXXXXXXXXXXX")
         return render_template('blog.html', title=blg_title, blg_body=blg_body, written_by=written_by, author_email=author_email, id=id)
 
     if user:
